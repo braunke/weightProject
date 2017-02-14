@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weights</title>
+</head>
+<body>
+<script>
+    sWeight = //user input guy or girl bar
+    weightNeeded = //user input weight
+    //calculates how much more weight needed from adding plates
+    if sWeight == 'guy':
+    weightNeeded = (weightNeeded - 45) / 2
+    GPlates(weightNeeded)
+    elif sWeight == 'girl':
+    weightNeeded = (weightNeeded - 33) / 2
+    GPlates(weightNeeded)
+
+    //plates available
+    weightsHave = [45, 25, 10, 5, 2.5]
+
+
+    function GPlates(weightNeeded):
+    weightList = []
+
+    while weightNeeded != 0:
+    plateAdded = False
+    for plate in weightsHave:
+    if weightNeeded >= plate:
+    weightNeeded -= plate
+    weightList.append(plate)
+    plateAdded = True
+    break
+    if not plateAdded:
+
+        weightList.append('Add change plates that equal to '+ format(weightNeeded, '.2f'))
+    weightNeeded = 0
+
+
+</script>
+</body>
+</html>
