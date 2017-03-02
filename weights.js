@@ -50,7 +50,130 @@ function isValid(targetWeight, barWeight) {
     }
     return valid;
 }
+function drawBar(canvas, context, color, horizontalPadding, barThickness) {
+    var xStart = horizontalPadding;
+    var yStart = (canvas.height - barThickness) / 2;
+    var width = canvas.width - (horizontalPadding * 2);
+    var height = barThickness;
+    context.fillStyle = color;
+    context.fillRect(xStart, yStart, width, height);
+}
+function drawPlate(canvas, context, xStart, plateDrawingConfiguration) {
+    var outlineColor = 'black';
+    var color = plateDrawingConfiguration.color;
+    var textColor = plateDrawingConfiguration.textColor;
+    var text = plateDrawingConfiguration.text;
+    var plateThickness = plateDrawingConfiguration.thickness;
+    var plateRadius = plateDrawingConfiguration.radius;
+
+    context.fillStyle = color;
+    context.beginPath();
+    context.arc(xStart, canvas.height / 2, plateRadius, 0, 2*Math.PI);
+    context.stroke();
+    context.fill();
+
+    context.fillStyle = outlineColor;
+    context.fillRect(xStart, (canvas.height / 2) - plateRadius - 1, plateThickness, (plateRadius * 2) + 2);
+    context.fillStyle = color;
+    context.fillRect(xStart, (canvas.height / 2) - plateRadius, plateThickness, plateRadius * 2);
+
+    context.fillStyle = color;
+    context.beginPath();
+    context.arc(xStart + plateThickness, canvas.height / 2, plateRadius, 0, 2*Math.PI);
+    context.stroke();
+    context.fill();
+
+    context.fillStyle = textColor;
+    context.fillText(text, xStart + 2 - plateRadius, canvas.height / 2);
+}
+var plateDrawingConfigurations = {
+    '55': {
+        color: '#66f',
+        textColor: 'black',
+        text: '55',
+        thickness: 20,
+        radius: 60
+    },
+    '45': {
+        color: '#f66',
+        textColor: 'black',
+        text: '45',
+        thickness: 20,
+        radius: 60
+    },
+    '35': {
+        color: '#ff6',
+        textColor: 'black',
+        text: '35',
+        thickness: 15,
+        radius: 60
+    },
+    '25': {
+        color: '#6f6',
+        textColor: 'black',
+        text: '25',
+        thickness: 15,
+        radius: 60
+    },
+    '15': {
+        color: '#555',
+        textColor: 'white',
+        text: '15',
+        thickness: 15,
+        radius: 60
+    },
+    '10': {
+        color: '#555',
+        textColor: 'white',
+        text: '10',
+        thickness: 15,
+        radius: 60
+    },
+    '5': {
+        color: '#666',
+        textColor: 'white',
+        text: '5',
+        thickness: 10,
+        radius: 40
+    },
+    '2.5': {
+        color: '#666',
+        textColor: 'white',
+        text: '2.5',
+        thickness: 10,
+        radius: 30
+    },
+    '1': {
+        color: '#fff',
+        textColor: 'black',
+        text: '1',
+        thickness: 10,
+        radius: 20
+    },
+    '0.5': {
+        color: '#66f',
+        textColor: 'black',
+        text: '0.5',
+        thickness: 10,
+        radius: 18
+    },
+};
+function draw() {
+    var canvas = $('canvas')[0];
+    var context = canvas.getContext('2d');
+    context.fillStyle="white";
+    context.fillRect(0,0,canvas.width,canvas.height);
+    drawBar(canvas, context, '#ccc', 20, 6);
+    var platesToUse = [55, 45, 35, 25, 15, 10, 5, 2.5, 1, 0.5];
+    var xStart = 100;
+    for (var i = 0; i < platesToUse.length; i++) {
+        var plateDrawingConfiguration = plateDrawingConfigurations[platesToUse[i]];
+        drawPlate(canvas, context, xStart, plateDrawingConfiguration);
+        xStart += plateDrawingConfiguration.thickness;
+    }
+}
 function calculate(event){
+    event.preventDefault(); // no form action redirect
     clearErrorStates();
     var targetWeight = getTargetWeight(); //user input weight
     var barWeight = getBarWeight(); //user input guy or girl bar weight
@@ -63,7 +186,7 @@ function calculate(event){
         var plateList = getNeededPlates(plateWeightNeeded, availablePlates);
         console.log(plateList);
     }
-    event.preventDefault(); // no form action redirect
+    draw();
 }
 function getNeededPlates(plateWeightNeeded, availablePlates) {
     var plateList = [];

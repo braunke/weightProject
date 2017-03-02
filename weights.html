@@ -6,11 +6,16 @@
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="weights.js"></script>
+    <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
-  <div class="col-sm-offset-2 col-sm-8">
+  <div class="col-sm-offset-2 col-sm-8 well">
       <h1>Plate Calculator</h1>
       <p>This program will take the weight you want to lift and tell you what plates you need to put on the bar </p>
+      <div id="canvasWrapper">
+          <canvas height="180" width="700"></canvas>
+      </div>
       <form class="form-horizontal" onsubmit="calculate(event)">
           <div id="targetWeightFormGroup" class="form-group">
               <label for="targetWeight" class="col-sm-2 control-label">Target Weight</label>
