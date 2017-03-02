@@ -125,13 +125,15 @@ function addChangePlateText(targetWeight, remainingWeight) {
 function calculate(event){
     event.preventDefault(); // no form action redirect
     clearErrorStates();
+
+
     var targetWeight = getTargetWeight(); //user input weight
     var barWeight = getBarWeight(); //user input guy or girl bar weight
 
     if (isValid(targetWeight, barWeight)) {
         //plates available
         var availablePlates = getAvailablePlates();
-
+        $('#changePlatesText').hide();
         var plateWeightNeeded = getPlateWeightNeeded(targetWeight, barWeight);
         var neededPlates = getNeededPlates(plateWeightNeeded, availablePlates);
         if (neededPlates.remainingWeight) {

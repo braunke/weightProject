@@ -1,13 +1,13 @@
 var plateDrawingConfigurations = {
     '55': {
-        color: '#66f',
+        color: '#f66',
         textColor: 'black',
         text: '55',
         thickness: 20,
         radius: 60
     },
     '45': {
-        color: '#f66',
+        color: '#66f',
         textColor: 'black',
         text: '45',
         thickness: 20,

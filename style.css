@@ -21,3 +21,6 @@ form {
 canvas {
     border: 1px solid steelblue;
 }
+#changePlatesText{
+    display : none;
+}
