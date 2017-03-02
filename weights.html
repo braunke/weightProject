@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="weights.js"></script>
+    <script src="weightConfigs.js"></script>
     <link rel="stylesheet" href="style.css">
 
 </head>
@@ -13,9 +14,6 @@
   <div class="col-sm-offset-2 col-sm-8 well">
       <h1>Plate Calculator</h1>
       <p>This program will take the weight you want to lift and tell you what plates you need to put on the bar </p>
-      <div id="canvasWrapper">
-          <canvas height="180" width="700"></canvas>
-      </div>
       <form class="form-horizontal" onsubmit="calculate(event)">
           <div id="targetWeightFormGroup" class="form-group">
               <label for="targetWeight" class="col-sm-2 control-label">Target Weight</label>
@@ -31,13 +29,13 @@
                   <div class="radio">
                       <label>
                           <input type="radio" name="barType" value="45">
-                          Guy
+                          Men's (45 lbs)
                       </label>
                   </div>
                   <div class="radio">
                       <label>
                           <input type="radio" name="barType" value="33">
-                          Girl
+                          Women's (33 lbs)
                       </label>
                   </div>
                   <p id="barTypeRequiredMessage" class="help-block hide">Select a bar type.</p>
@@ -118,6 +116,11 @@
               </div>
           </div>
       </form>
+      <div id="canvasWrapper">
+          <p><em>Showing one end of bar</em></p>
+          <canvas height="180" width="400"></canvas>
+          <p id="changePlatesText"><em>*Bar loaded with plates shown equals <span id="plateTotal"></span> lbs.  Add change plates totaling <span id="weightRemaining"></span> lbs to each end of the bar to meet your target weight.</em></p>
+      </div>
   </div>
 </body>
 </html>

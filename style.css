@@ -12,6 +12,10 @@ form {
 
 #canvasWrapper {
     text-align: center;
+    display : none;
+    border-top: 1px solid #999;
+    margin-top: 25px;
+    padding-top: 25px;
 }
 
 canvas {

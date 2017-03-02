@@ -55,6 +55,17 @@ function drawBar(canvas, context, color, horizontalPadding, barThickness) {
     var yStart = (canvas.height - barThickness) / 2;
     var width = canvas.width - (horizontalPadding * 2);
     var height = barThickness;
+    context.fillStyle = 'black';
+    context.fillRect(xStart, yStart - 1, width, height + 2);
+    context.fillStyle = color;
+    context.fillRect(xStart, yStart, width, height);
+}
+function drawBarEnd(canvas, context, color, xStart, horizontalPadding, barThickness) {
+    var yStart = (canvas.height - barThickness) / 2;
+    var width = canvas.width - (xStart + horizontalPadding);
+    var height = barThickness;
+    context.fillStyle = 'black';
+    context.fillRect(xStart, yStart - 1, width, height + 2);
     context.fillStyle = color;
     context.fillRect(xStart, yStart, width, height);
 }
@@ -86,91 +97,30 @@ function drawPlate(canvas, context, xStart, plateDrawingConfiguration) {
     context.fillStyle = textColor;
     context.fillText(text, xStart + 2 - plateRadius, canvas.height / 2);
 }
-var plateDrawingConfigurations = {
-    '55': {
-        color: '#66f',
-        textColor: 'black',
-        text: '55',
-        thickness: 20,
-        radius: 60
-    },
-    '45': {
-        color: '#f66',
-        textColor: 'black',
-        text: '45',
-        thickness: 20,
-        radius: 60
-    },
-    '35': {
-        color: '#ff6',
-        textColor: 'black',
-        text: '35',
-        thickness: 15,
-        radius: 60
-    },
-    '25': {
-        color: '#6f6',
-        textColor: 'black',
-        text: '25',
-        thickness: 15,
-        radius: 60
-    },
-    '15': {
-        color: '#555',
-        textColor: 'white',
-        text: '15',
-        thickness: 15,
-        radius: 60
-    },
-    '10': {
-        color: '#555',
-        textColor: 'white',
-        text: '10',
-        thickness: 15,
-        radius: 60
-    },
-    '5': {
-        color: '#666',
-        textColor: 'white',
-        text: '5',
-        thickness: 10,
-        radius: 40
-    },
-    '2.5': {
-        color: '#666',
-        textColor: 'white',
-        text: '2.5',
-        thickness: 10,
-        radius: 30
-    },
-    '1': {
-        color: '#fff',
-        textColor: 'black',
-        text: '1',
-        thickness: 10,
-        radius: 20
-    },
-    '0.5': {
-        color: '#66f',
-        textColor: 'black',
-        text: '0.5',
-        thickness: 10,
-        radius: 18
-    },
-};
-function draw() {
+
+function draw(plateList) {
+    $('#canvasWrapper').show();
     var canvas = $('canvas')[0];
     var context = canvas.getContext('2d');
     context.fillStyle="white";
-    context.fillRect(0,0,canvas.width,canvas.height);
+    context.fillRect(0, 0, canvas.width, canvas.height);
     drawBar(canvas, context, '#ccc', 20, 6);
-    var platesToUse = [55, 45, 35, 25, 15, 10, 5, 2.5, 1, 0.5];
-    var xStart = 100;
-    for (var i = 0; i < platesToUse.length; i++) {
-        var plateDrawingConfiguration = plateDrawingConfigurations[platesToUse[i]];
+    var xStart = canvas.width - 100;
+    for (var i = 0; i < plateList.length; i++) {
+        var plateDrawingConfiguration = plateDrawingConfigurations[plateList[i]];
+        xStart -= plateDrawingConfiguration.thickness;
+    }
+    for (var i = 0; i < plateList.length; i++) {
+        var plateDrawingConfiguration = plateDrawingConfigurations[plateList[i]];
         drawPlate(canvas, context, xStart, plateDrawingConfiguration);
         xStart += plateDrawingConfiguration.thickness;
     }
+    drawBarEnd(canvas, context, '#ccc', xStart, 20, 14);
+}
+function addChangePlateText(targetWeight, remainingWeight) {
+    $('#changePlatesText').show();
+    $('#plateTotal').text(targetWeight - remainingWeight * 2);
+    $('#weightRemaining').text(remainingWeight);
 }
 function calculate(event){
     event.preventDefault(); // no form action redirect
@@ -183,10 +133,13 @@ function calculate(event){
         var availablePlates = getAvailablePlates();
 
         var plateWeightNeeded = getPlateWeightNeeded(targetWeight, barWeight);
-        var plateList = getNeededPlates(plateWeightNeeded, availablePlates);
-        console.log(plateList);
+        var neededPlates = getNeededPlates(plateWeightNeeded, availablePlates);
+        if (neededPlates.remainingWeight) {
+            addChangePlateText(targetWeight, neededPlates.remainingWeight);
+        }
+        draw(neededPlates.plateList);
     }
-    draw();
+
 }
 function getNeededPlates(plateWeightNeeded, availablePlates) {
     var plateList = [];
@@ -194,7 +147,8 @@ function getNeededPlates(plateWeightNeeded, availablePlates) {
     // sort highest to lowest
     availablePlates = availablePlates.sort(function(a, b) {return a < b;});
 
-    while (plateWeightNeeded != 0) {
+    var plateAdded = true;
+    while (plateAdded) {
         var plateAdded = false;
         for (i = 0; i < availablePlates.length; i++) {
             var plate = availablePlates[i];
@@ -205,10 +159,9 @@ function getNeededPlates(plateWeightNeeded, availablePlates) {
                 break;
             }
         }
-        if (!plateAdded) {
-            plateList.push('Add change plates that equal to ' + plateWeightNeeded);
-            plateWeightNeeded = 0;
-        }
     }
-    return plateList;
+    return {
+        remainingWeight: plateWeightNeeded,
+        plateList: plateList
+    };
 }
