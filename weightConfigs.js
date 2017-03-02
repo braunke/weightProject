@@ -1,3 +1,4 @@
+//configurations for all plate types
 var plateDrawingConfigurations = {
     '55': {
         color: '#f66',
