@@ -3,18 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <title>Weights</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 </head>
 <body>
-<h1>Plate Calculator</h1>
-<p>This program will take the weight you want to lift and tell you what plates you need to put on the bar </p>
-<form onsubmit="calculate(event)">
-    <p>Enter your weight here</p>
-    <input type="number" name="weightNeeded">
-    <p>Are you using a guy or girls bar?</p>
-    <input type="radio" name="barType" value="45">Guy<br>
-    <input type="radio" name="barType" value="33">Girl
-    <button type="submit">Calculate</button>
-</form>
+  <div class="col-sm-offset-2 col-sm-8">
+      <h1>Plate Calculator</h1>
+      <p>This program will take the weight you want to lift and tell you what plates you need to put on the bar </p>
+      <form class="form-horizontal" onsubmit="calculate(event)">
+          <div class="form-group">
+              <label for="weightNeeded" class="col-sm-2 control-label">Target Weight</label>
+              <div class="col-sm-10" id="weightNeeded">
+                  <input type="number" class="form-control" name="weightNeeded" placeholder="Target Weight">
+              </div>
+          </div>
+          <div class="form-group">
+              <label for="barType" class="col-sm-2 control-label">Are you using a guy or girls bar?</label>
+              <div class="col-sm-10" id="barType">
+                  <div class="radio">
+                      <label>
+                          <input type="radio" name="barType" value="45">
+                          Guy
+                      </label>
+                  </div>
+                  <div class="radio">
+                      <label>
+                          <input type="radio" name="barType" value="33">
+                          Girl
+                      </label>
+                  </div>
+              </div>
+          </div>
+          <div class="form-group">
+              <label for="availablePlates" class="col-sm-2 control-label">What weights do you have?</label>
+              <div class="col-sm-10" id="availablePlates">
+                  <div class="checkbox">
+                      <label>
+                          <input type="checkbox" name="availablePlates" value="2.5">
+                          2.5
+                      </label>
+                  </div>
+                  <div class="checkbox">
+                      <label>
+                          <input type="checkbox" name="availablePlates" value="5">
+                          5
+                      </label>
+                  </div>
+                  <div class="checkbox">
+                      <label>
+                          <input type="checkbox" name="availablePlates" value="10">
+                          10
+                      </label>
+                  </div>
+                  <div class="checkbox">
+                      <label>
+                          <input type="checkbox" name="availablePlates" value="25">
+                          25
+                      </label>
+                  </div>
+                  <div class="checkbox">
+                      <label>
+                          <input type="checkbox" name="availablePlates" value="45">
+                          45
+                      </label>
+                  </div>
+              </div>
+          </div>
+          <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-primary">Calculate</button>
+              </div>
+          </div>
+      </form>
+  </div>
 <script>
     function getBarWeight(){
         var selectedBarRadioButton = document.querySelector('input[name="barType"]:checked');
@@ -22,7 +82,7 @@
         if (selectedBarRadioButton) {
             barWeight = selectedBarRadioButton.value;
         }
-        return barWeight;
+        return parseFloat(barWeight);
     }
     function getWeightNeeded(){
         var weightNeededInput = document.querySelector('input[name="weightNeeded"]');
@@ -30,7 +90,7 @@
         if (weightNeededInput) {
             weightNeeded = weightNeededInput.value || 0;
         }
-        return weightNeeded;
+        return parseFloat(weightNeeded);
     }
     //calculates how much more weight needed from adding plates
     function getPlateWeightNeeded(weightNeeded) {
@@ -39,7 +99,12 @@
     }
     //calculates how much more weight needed from adding plates
     function getAvailablePlates() {
-        return [45, 25, 10, 5, 2.5];
+        var availableWeightsInputs = document.querySelectorAll('input[name="availablePlates"]:checked');
+        var availableWeights = [];
+        for (var i = 0; i < availableWeightsInputs.length; i++) {
+            availableWeights.push(parseFloat(availableWeightsInputs[i].value));
+        }
+        return availableWeights;
     }
     function calculate(event){
         var weightNeeded = getWeightNeeded(); //user input weight
@@ -48,12 +113,15 @@
         var availablePlates = getAvailablePlates();
 
         var plateWeightNeeded = getPlateWeightNeeded(weightNeeded);
-        var plateList = GPlates(plateWeightNeeded, availablePlates);
+        var plateList = getNeededPlates(plateWeightNeeded, availablePlates);
         console.log(plateList);
         event.preventDefault(); // no form action redirect
     }
-    function GPlates(plateWeightNeeded, availablePlates) {
+    function getNeededPlates(plateWeightNeeded, availablePlates) {
         var plateList = [];
+
+        // sort highest to lowest
+        availablePlates = availablePlates.sort(function(a, b) {return a < b;});
 
         while (plateWeightNeeded != 0) {
             var plateAdded = false;
