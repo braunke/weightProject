@@ -4,19 +4,23 @@
     <meta charset="UTF-8">
     <title>Weights</title>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="weights.js"></script>
 </head>
 <body>
   <div class="col-sm-offset-2 col-sm-8">
       <h1>Plate Calculator</h1>
       <p>This program will take the weight you want to lift and tell you what plates you need to put on the bar </p>
       <form class="form-horizontal" onsubmit="calculate(event)">
-          <div class="form-group">
-              <label for="weightNeeded" class="col-sm-2 control-label">Target Weight</label>
-              <div class="col-sm-10" id="weightNeeded">
-                  <input type="number" class="form-control" name="weightNeeded" placeholder="Target Weight">
+          <div id="targetWeightFormGroup" class="form-group">
+              <label for="targetWeight" class="col-sm-2 control-label">Target Weight</label>
+              <div class="col-sm-10" id="targetWeight">
+                  <input type="number" class="form-control" name="targetWeight" placeholder="Target Weight">
+                  <p id="targetWeightRequiredMessage" class="help-block hide">Enter a target weight.</p>
+                  <p id="minimumTargetWeightMessage" class="help-block hide">The target weight must be at least the weight of the bar.</p>
               </div>
           </div>
-          <div class="form-group">
+          <div id="barTypeFormGroup" class="form-group">
               <label for="barType" class="col-sm-2 control-label">Are you using a guy or girls bar?</label>
               <div class="col-sm-10" id="barType">
                   <div class="radio">
@@ -31,40 +35,75 @@
                           Girl
                       </label>
                   </div>
+                  <p id="barTypeRequiredMessage" class="help-block hide">Select a bar type.</p>
               </div>
           </div>
           <div class="form-group">
               <label for="availablePlates" class="col-sm-2 control-label">What weights do you have?</label>
               <div class="col-sm-10" id="availablePlates">
-                  <div class="checkbox">
-                      <label>
-                          <input type="checkbox" name="availablePlates" value="2.5">
-                          2.5
-                      </label>
+                  <div class="col-sm-6">
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" name="availablePlates" value="2.5" checked>
+                              2.5
+                          </label>
+                      </div>
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" name="availablePlates" value="5" checked>
+                              5
+                          </label>
+                      </div>
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" name="availablePlates" value="10" checked>
+                              10
+                          </label>
+                      </div>
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" name="availablePlates" value="25" checked>
+                              25
+                          </label>
+                      </div>
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" name="availablePlates" value="45" checked>
+                              45
+                          </label>
+                      </div>
                   </div>
-                  <div class="checkbox">
-                      <label>
-                          <input type="checkbox" name="availablePlates" value="5">
-                          5
-                      </label>
-                  </div>
-                  <div class="checkbox">
-                      <label>
-                          <input type="checkbox" name="availablePlates" value="10">
-                          10
-                      </label>
-                  </div>
-                  <div class="checkbox">
-                      <label>
-                          <input type="checkbox" name="availablePlates" value="25">
-                          25
-                      </label>
-                  </div>
-                  <div class="checkbox">
-                      <label>
-                          <input type="checkbox" name="availablePlates" value="45">
-                          45
-                      </label>
+                  <div class="col-sm-6">
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" name="availablePlates" value="0.5">
+                              0.5
+                          </label>
+                      </div>
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" name="availablePlates" value="1">
+                              1
+                          </label>
+                      </div>
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" name="availablePlates" value="15">
+                              15
+                          </label>
+                      </div>
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" name="availablePlates" value="35">
+                              35
+                          </label>
+                      </div>
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" name="availablePlates" value="55">
+                              55
+                          </label>
+                      </div>
                   </div>
               </div>
           </div>
@@ -75,72 +114,5 @@
           </div>
       </form>
   </div>
-<script>
-    function getBarWeight(){
-        var selectedBarRadioButton = document.querySelector('input[name="barType"]:checked');
-        var barWeight = 0;
-        if (selectedBarRadioButton) {
-            barWeight = selectedBarRadioButton.value;
-        }
-        return parseFloat(barWeight);
-    }
-    function getWeightNeeded(){
-        var weightNeededInput = document.querySelector('input[name="weightNeeded"]');
-        var weightNeeded = 0;
-        if (weightNeededInput) {
-            weightNeeded = weightNeededInput.value || 0;
-        }
-        return parseFloat(weightNeeded);
-    }
-    //calculates how much more weight needed from adding plates
-    function getPlateWeightNeeded(weightNeeded) {
-        var sWeight = getBarWeight(); //user input guy or girl bar
-        return (weightNeeded - sWeight) / 2;
-    }
-    //calculates how much more weight needed from adding plates
-    function getAvailablePlates() {
-        var availableWeightsInputs = document.querySelectorAll('input[name="availablePlates"]:checked');
-        var availableWeights = [];
-        for (var i = 0; i < availableWeightsInputs.length; i++) {
-            availableWeights.push(parseFloat(availableWeightsInputs[i].value));
-        }
-        return availableWeights;
-    }
-    function calculate(event){
-        var weightNeeded = getWeightNeeded(); //user input weight
-
-        //plates available
-        var availablePlates = getAvailablePlates();
-
-        var plateWeightNeeded = getPlateWeightNeeded(weightNeeded);
-        var plateList = getNeededPlates(plateWeightNeeded, availablePlates);
-        console.log(plateList);
-        event.preventDefault(); // no form action redirect
-    }
-    function getNeededPlates(plateWeightNeeded, availablePlates) {
-        var plateList = [];
-
-        // sort highest to lowest
-        availablePlates = availablePlates.sort(function(a, b) {return a < b;});
-
-        while (plateWeightNeeded != 0) {
-            var plateAdded = false;
-            for (i = 0; i < availablePlates.length; i++) {
-                var plate = availablePlates[i];
-                if (plateWeightNeeded >= plate) {
-                    plateWeightNeeded -= plate;
-                    plateList.push(plate);
-                    plateAdded = true;
-                    break;
-                }
-            }
-            if (!plateAdded) {
-                plateList.push('Add change plates that equal to ' + plateWeightNeeded);
-                plateWeightNeeded = 0;
-            }
-        }
-        return plateList;
-    }
-</script>
 </body>
 </html>
